@@ -9,13 +9,14 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.WriteTimeoutException;
+import com.datastax.driver.core.policies.LoggingRetryPolicy;
 
 public class LockDao {
 
 	private static Logger logger = LoggerFactory.getLogger(LockDao.class);
 	private Session session;
 
-	private static String keyspaceName = "datastax_locking";
+	private static String keyspaceName = "datastax_mailpay";
 	private static String seqtable = keyspaceName + ".lock_mem";
 
 	private String LOCK_UPDATE = "update " + seqtable + " set lock = ? where id = ? if lock=?";
@@ -26,7 +27,9 @@ public class LockDao {
 
 	public LockDao(String[] contactPoints) {
 
-		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).build();
+		Cluster cluster = Cluster.builder()
+				.addContactPoints(contactPoints)
+				.build();	
 
 		this.session = cluster.connect();
 
@@ -47,7 +50,6 @@ public class LockDao {
 					logger.info("Update failed as current lock was " + failedLocked + " not null");
 					return false;
 				} else {
-					//logger.info("Update Succeeded");
 					logger.debug("lock acquired for " + id);
 				}
 			}
