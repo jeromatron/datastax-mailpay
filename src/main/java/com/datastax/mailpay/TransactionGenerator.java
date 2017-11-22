@@ -2,6 +2,7 @@ package com.datastax.mailpay;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.time.DateTime;
 
@@ -24,8 +25,8 @@ public class TransactionGenerator {
 		long millis = DateTime.now().getMillis() - (new Double(Math.random() * noOfMillis).longValue() + 1l);
 		DateTime newDate = DateTime.now().withMillis(millis);
 
-		
-		Transaction transaction = new Transaction(acc1 + "@gmail.com", acc2 + "@gmail.com", acc1 + "-" + acc2, newDate, Math.random()*1000);
+		String transactionId = UUID.randomUUID().toString();
+		Transaction transaction = new Transaction(acc1 + "@gmail.com", acc2 + "@gmail.com", acc1 + "-" + acc2, newDate, transactionId, Math.random()*1000);
 		 
 		return transaction;
 	}

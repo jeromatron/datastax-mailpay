@@ -1,7 +1,5 @@
 package com.datastax.mailpay;
 
-import java.util.UUID;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +20,26 @@ public class MailPayService {
 	}
 
 	public Result transferMoney(String acc1, String acc2, double amount, String reference,
-			DateTime transactionTime) throws Exception {
+			DateTime transactionTime, String transactionId) throws Exception {
 
 		simulateDelayOrException();
-
-		String transactionId = UUID.randomUUID().toString();
+				
 		Result result = dao.insertTransaction(transactionId, acc1, acc2, amount, reference, transactionTime);
 		
 		if (result.isDeclined()){
 			throw new DBException(result.getResponseText());
 		}
+		
+		logger.debug(transactionId + " state updated");
+		
 		logger.debug(String.format("Transfer made %s to %s", acc1, acc2));
 		return result;
+	}
+	
+	public boolean updateStateStatus(String acc1, String acc2, String transactionId, State state){
+		this.dao.updateStateStatus(acc1, acc2, transactionId, state);
+		
+		return true;
 	}
 
 	private void simulateDelayOrException() {
@@ -64,4 +70,14 @@ public class MailPayService {
 		timer.end();
 		logger.debug("Timer delay took " + timer.getTimeTakenMillis());
 	}
+
+	public boolean insertTransactionState(Transaction transaction) {
+				
+		dao.insertTransactionState(transaction.getTransactionId(), transaction.getAcc1(), transaction.getAcc2(), transaction.getAmount(), 
+				transaction.getReference(), transaction.getTransactionTime(), State.STARTED);
+		
+		return true;
+	}
+
+	
 }

@@ -1,31 +1,24 @@
 package com.datastax.mailpay.commands;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.datastax.demo.utils.Timer;
 import com.datastax.mailpay.MailPayService;
 import com.datastax.mailpay.Result;
+import com.datastax.mailpay.State;
+import com.datastax.mailpay.Transaction;
 
 public class TransferFundsCommand implements Command {
 
 	private static Logger logger = LoggerFactory.getLogger(TransferFundsCommand.class);
 
-	private String acc1;
-	private String acc2;
-	private double amount;
-	private String reference;
-	private DateTime transactionTime;
-
+	private Transaction transaction;
 	private static MailPayService mailPayService = MailPayService.getInstance();
 
-	public TransferFundsCommand(String acc1, String acc2, double amount, String reference, DateTime transactionTime) {
-		this.acc1 = acc1;
-		this.acc2 = acc2;
-		this.amount = amount;
-		this.reference = reference;
-		this.transactionTime = transactionTime;
+
+	public TransferFundsCommand(Transaction transaction) {
+		this.transaction = transaction;
 	}
 
 	@Override
@@ -33,18 +26,27 @@ public class TransferFundsCommand implements Command {
 		
 		Timer transactionTimer = new Timer();		
 		
-		Result result1 = mailPayService.transferMoney(acc1, acc2, amount, reference, transactionTime);
+		if (mailPayService.insertTransactionState(transaction)){
+			logger.debug(transaction.getTransactionId() + " state created");
+		}
+		
+		Result result1 = mailPayService.transferMoney(transaction.getAcc1(), transaction.getAcc2(), transaction.getAmount(), 
+				transaction.getReference(), transaction.getTransactionTime(), transaction.getTransactionId());
 		
 		if (result1.isApproved()){
 			try{
-				mailPayService.transferMoney(acc2, acc1, -amount, reference, transactionTime);
+				mailPayService.transferMoney(transaction.getAcc2(), transaction.getAcc1(), -transaction.getAmount(), 
+						transaction.getReference(), transaction.getTransactionTime(), transaction.getTransactionId());
+								
+				mailPayService.updateStateStatus(transaction.getAcc1(), transaction.getAcc2(), transaction.getTransactionId(), State.SUCCESSFUL);
 			}catch (Exception e){
 				//Any exception must undo the result from the first Debit. 
 				e.getMessage();
+				
 				logger.info("Undo transaction " + result1.getTransactionId());
 
 				try{
-					Result undoresult = mailPayService.transferMoney(acc1, acc2, -amount, "Undoing transaction " + result1.getTransactionId(), transactionTime.plusMillis(100));
+					Result undoresult = mailPayService.transferMoney(transaction.getAcc1(), transaction.getAcc2(), -transaction.getAmount(), "Undoing transaction " + transaction.getTransactionId(), transaction.getTransactionTime().plusMillis(100), transaction.getTransactionId());
 					
 					if (undoresult.isDeclined()){
 						throw new Exception (undoresult.getResponseText());

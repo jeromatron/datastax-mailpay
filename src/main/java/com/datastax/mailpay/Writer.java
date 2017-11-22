@@ -27,16 +27,13 @@ class Writer implements KillableRunner {
 			transaction = queue.poll();
 
 			if (transaction != null) {
-				try {
-
+				try {					
 					// Lock accounts
 					LockCommand lock = new LockCommand(transaction.getAcc1(), transaction.getAcc2());
 					lock.run();
 
 					// Transfer money
-					TransferFundsCommand transferFundsCommand = new TransferFundsCommand(transaction.getAcc1(),
-							transaction.getAcc2(), transaction.getAmount(), transaction.getReference(),
-							transaction.getTransactionTime());
+					TransferFundsCommand transferFundsCommand = new TransferFundsCommand(transaction);
 					boolean succeeded = transferFundsCommand.run();
 					
 					if (!succeeded) {

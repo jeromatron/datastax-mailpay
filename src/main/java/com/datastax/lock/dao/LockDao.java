@@ -9,7 +9,6 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.WriteTimeoutException;
-import com.datastax.driver.core.policies.LoggingRetryPolicy;
 
 public class LockDao {
 

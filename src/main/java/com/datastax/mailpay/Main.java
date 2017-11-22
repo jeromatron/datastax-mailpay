@@ -20,9 +20,9 @@ public class Main {
 
 		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "10"));
 		int noOfAccounts = Integer.parseInt(PropertyHelper.getProperty("noOfAccounts", "1000000"));
-		int noOfTransactions = Integer.parseInt(PropertyHelper.getProperty("noOfTransactions", "10000000"));
+		int noOfTransactions = Integer.parseInt(PropertyHelper.getProperty("noOfTransactions", "500000"));
 
-		BlockingQueue<Transaction> queue = new ArrayBlockingQueue<Transaction>(100);
+		BlockingQueue<Transaction> queue = new ArrayBlockingQueue<Transaction>(5);
 		ExecutorService executor = Executors.newFixedThreadPool(noOfThreads);
 
 		Timer timer = new Timer();
@@ -48,16 +48,14 @@ public class Main {
 				e.printStackTrace();
 			}
 			
-			//logger.info("Total : " + counter.get());
 			if (counter.get() % 1000 == 0) {
 				logger.info("Total : " + counter.get());
 			}
 		}
 
 		timer.end();
-		//logger.info(noOfTransactions + " took " + timer.getTimeTakenSeconds() + " sec ("
-			//	+ (noOfTransactions / timer.getTimeTakenSeconds()) + ") a sec");
-		//System.exit(0);
+		logger.info(noOfTransactions + " took " + timer.getTimeTakenSeconds() + " sec ("
+				+ (noOfTransactions / timer.getTimeTakenSeconds()) + ") a sec");
 	}
 
 	
