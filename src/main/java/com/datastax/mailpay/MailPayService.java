@@ -30,8 +30,7 @@ public class MailPayService {
 			throw new DBException(result.getResponseText());
 		}
 		
-		logger.debug(transactionId + " state updated");
-		
+		logger.debug(transactionId + " state updated");		
 		logger.debug(String.format("Transfer made %s to %s", acc1, acc2));
 		return result;
 	}
@@ -51,16 +50,16 @@ public class MailPayService {
 		} catch (InterruptedException e) {
 		}
 
-		/* fail 5% of the time to show how fallback works */
+		/* fail .001% of the time to show how fallback works */
 		if (Math.random() > 0.999) {
 			throw new RuntimeException("random failure processing transaction response");
 		}
 
 		/*
-		 * latency spike 5% of the time so timeouts can be triggered
+		 * latency spike .001% of the time so timeouts can be triggered
 		 * occasionally
 		 */
-		if (Math.random() > 0.95) {
+		if (Math.random() > 0.999) {
 			// random latency spike
 			try {
 				Thread.sleep((int) (Math.random() * 300) + 25);

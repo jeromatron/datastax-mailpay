@@ -3,7 +3,19 @@
 
 ## Scenario
 
-This demo shows how to lock tables for a particular customer
+This is an example application for exchanging money using email addresses. 
+
+The process for will add a transaction to both the payer and payee's ledger. 
+
+The steps involved are 
+
+1. Create an entry in the lock table to lock the accounts 
+2. Create an entry in the transaction_state table with a status if STARTED to ensure that we have a record of what we trying to do. This will act as a state machine for the transaction. 
+3. Write to both payer and payees ledger. 
+4. Update transaction state to SUCCESS   
+5. Unlock the accounts. 
+
+
 
 ## Schema Setup
 Note : This will drop the keyspace "datastax_mailpay" and create a new one. All existing data will be lost. 

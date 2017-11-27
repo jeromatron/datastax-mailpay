@@ -18,7 +18,7 @@ public class Main {
 
 	public Main() {
 
-		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "10"));
+		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "20"));
 		int noOfAccounts = Integer.parseInt(PropertyHelper.getProperty("noOfAccounts", "1000000"));
 		int noOfTransactions = Integer.parseInt(PropertyHelper.getProperty("noOfTransactions", "500000"));
 
