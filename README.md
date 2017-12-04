@@ -10,12 +10,12 @@ The process for will add a transaction to both the payer and payee's ledger.
 The steps involved are 
 
 1. Create an entry in the lock table to lock the accounts 
-2. Create an entry in the transaction_state table with a status if STARTED to ensure that we have a record of what we trying to do. This will act as a state machine for the transaction. 
-3. Write to both payer and payees ledger. 
+2. Create an entry in the transaction_state table with a status if STARTED to ensure that we have a record of what we trying to do. This will act as a state machine for the transaction. The state table will contain a copy of the transactions so that they can replayed.   
+3. Write to both payer and payee's ledger. 
 4. Update transaction state to SUCCESS   
 5. Unlock the accounts. 
 
-
+If there are problems at any stage the, the transactions can either be replayed by the entry in the state table. 
 
 ## Schema Setup
 Note : This will drop the keyspace "datastax_mailpay" and create a new one. All existing data will be lost. 
@@ -27,7 +27,7 @@ To create the a single node cluster with replication factor of 1 for standard lo
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaSetup"
 
-To run the reader
+To run the processor 
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main"
 		

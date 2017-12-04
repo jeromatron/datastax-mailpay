@@ -1,4 +1,4 @@
-	create keyspace if not exists datastax_mailpay WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1' };
+create keyspace if not exists datastax_mailpay WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1' };
 
 use datastax_mailpay;
 
@@ -27,7 +27,6 @@ create table if not exists transaction_state(
 	transaction_error text,
 	PRIMARY KEY ((account1, account2, transaction_id))
 );
-
 
 create table if not exists transactions(
 	account text, 
