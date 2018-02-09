@@ -28,6 +28,8 @@ create table if not exists transaction_state(
 	PRIMARY KEY ((account1, account2, transaction_id))
 );
 
+create search index on transaction_state;
+
 create table if not exists transactions(
 	account text, 
 	transaction_time timestamp, 
