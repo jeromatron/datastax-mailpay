@@ -15,7 +15,7 @@ The steps involved are
 4. Update transaction state to SUCCESS   
 5. Unlock the accounts. 
 
-If there are problems at any stage the, the transactions can either be replayed by the entry in the state table. 
+If there are problems at any stage the, the transactions can be replayed by the entry in the state table. 
 
 ## Schema Setup
 Note : This will drop the keyspace "datastax_mailpay" and create a new one. All existing data will be lost. 
