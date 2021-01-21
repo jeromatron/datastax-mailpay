@@ -9,18 +9,16 @@ import com.datastax.demo.utils.Timer;
 import com.datastax.mailpay.dao.MailPayDao;
 
 public class MailPayService {
-
 	private static Logger logger = LoggerFactory.getLogger(MailPayService.class);
 	private static MailPayService service = new MailPayService();
 
-	private MailPayDao dao = new MailPayDao(PropertyHelper.getProperty("contactPoints", "localhost").split(","));
+	private MailPayDao dao = new MailPayDao();
 
 	public static MailPayService getInstance() {
 		return service;
 	}
 
-	public Result transferMoney(String acc1, String acc2, double amount, String reference,
-			DateTime transactionTime, String transactionId) throws Exception {
+	public Result transferMoney(String acc1, String acc2, double amount, String reference, DateTime transactionTime, String transactionId) throws Exception {
 
 		simulateDelayOrException();
 				
@@ -42,7 +40,6 @@ public class MailPayService {
 	}
 
 	private void simulateDelayOrException() {
-
 		Timer timer = new Timer();
 		/* simulate performing network call to retrieve user information */
 		try {
@@ -71,12 +68,15 @@ public class MailPayService {
 	}
 
 	public boolean insertTransactionState(Transaction transaction) {
-				
-		dao.insertTransactionState(transaction.getTransactionId(), transaction.getAcc1(), transaction.getAcc2(), transaction.getAmount(), 
-				transaction.getReference(), transaction.getTransactionTime(), State.STARTED);
-		
+		dao.insertTransactionState(
+				transaction.getTransactionId(),
+				transaction.getAcc1(),
+				transaction.getAcc2(),
+				transaction.getAmount(),
+				transaction.getReference(),
+				transaction.getTransactionTime(),
+				State.STARTED
+		);
 		return true;
 	}
-
-	
 }

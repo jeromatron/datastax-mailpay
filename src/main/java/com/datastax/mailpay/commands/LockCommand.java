@@ -7,7 +7,6 @@ import com.datastax.demo.utils.Timer;
 import com.datastax.lock.LockService;
 
 public class LockCommand implements Command{
-
 	private static Logger logger = LoggerFactory.getLogger(LockCommand.class);
 	
 	private String acc1;
@@ -20,10 +19,8 @@ public class LockCommand implements Command{
 		this.acc2 = acc2;
 	}
 
-
 	@Override
 	public Boolean run() throws Exception {
-		
 		Timer transactionTimer = new Timer();		
 		lockService.getLock(acc1);
 		lockService.getLock(acc2);

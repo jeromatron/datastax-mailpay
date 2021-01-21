@@ -7,12 +7,10 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 
 public class TransactionGenerator {
-
 	private static final long DAY_MILLIS = 1000 * 60 * 60 * 24;
 	private static final long noOfDays = 90;
 
 	public static Transaction createRandomTransaction(int noOfAccounts) {
-
 		long noOfMillis = noOfDays * DAY_MILLIS;
 
 		int acc1 = new Double(Math.random() * noOfAccounts).intValue();

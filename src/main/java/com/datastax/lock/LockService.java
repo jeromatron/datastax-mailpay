@@ -7,8 +7,7 @@ import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.lock.dao.LockDao;
 
 public class LockService {
-	
-	private LockDao dao = new LockDao(PropertyHelper.getProperty("contactPoints", "localhost").split(","));
+	private LockDao dao = new LockDao();
 	private static Logger logger = LoggerFactory.getLogger( LockService.class );
 
 	private static LockService lockService = new LockService();
@@ -23,6 +22,5 @@ public class LockService {
 
 	public boolean releaseLock(String id) {
 		return dao.releaseLock(id);
-		
 	}
 }

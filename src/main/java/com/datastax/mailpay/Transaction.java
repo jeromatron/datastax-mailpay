@@ -62,9 +62,12 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction [acc1=" + acc1 + ", acc2=" + acc2 + ", reference=" + reference + ", transactionTime="
-				+ transactionTime + ", transactionId=" + transactionId + ", amount=" + amount + "]";
+		return new StringBuilder("Transaction [acc1=").append(acc1)
+				.append(", acc2=").append(acc2)
+				.append(", reference=").append(reference)
+				.append(", transactionTime=").append(transactionTime)
+				.append(", transactionId=").append(transactionId)
+				.append(", amount=").append(amount)
+				.append("]").toString();
 	}
-	
-	
 }

@@ -1,13 +1,13 @@
-create keyspace if not exists datastax_mailpay WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1' };
+CREATE KEYSPACE IF NOT EXISTS datastax_mailpay WITH replication = {'class': 'NetworkTopologyStrategy', 'dc1' : 1};
 
-use datastax_mailpay;
+USE datastax_mailpay;
 
-create table  if not exists lock(
+CREATE TABLE IF NOT EXISTS lock(
     id text PRIMARY KEY,
     lock text
 );
 
-create table  if not exists lock_mem(
+CREATE TABLE IF NOT EXISTS lock_mem(
     id text PRIMARY KEY,
     lock text
 ) WITH compaction= { 'class': 'MemoryOnlyStrategy' }
@@ -16,7 +16,7 @@ create table  if not exists lock_mem(
 	 AND gc_grace_seconds = 300
      AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'};
 
-create table if not exists transaction_state(
+CREATE TABLE IF NOT EXISTS transaction_state(
 	account1 text,
 	account2 text,
 	status text,
@@ -28,9 +28,20 @@ create table if not exists transaction_state(
 	PRIMARY KEY ((account1, account2, transaction_id))
 );
 
-create search index on transaction_state;
+CREATE CUSTOM INDEX IF NOT EXISTS transaction_state_status_sai_idx ON
+datastax_mailpay.transaction_state (status)
+USING 'StorageAttachedIndex'
+WITH OPTIONS = {'case_sensitive': 'false', 'normalize': 'true', 'ascii': 'true'};
 
-create table if not exists transactions(
+CREATE CUSTOM INDEX IF NOT EXISTS transaction_state_transaction_time_sai_idx ON
+datastax_mailpay.transaction_state (transaction_time)
+USING 'StorageAttachedIndex';
+
+CREATE CUSTOM INDEX IF NOT EXISTS transaction_state_amount_sai_idx ON
+datastax_mailpay.transaction_state (amount)
+USING 'StorageAttachedIndex';
+
+CREATE TABLE IF NOT EXISTS transactions(
 	account text, 
 	transaction_time timestamp, 
 	transaction_id text,
@@ -39,5 +50,3 @@ create table if not exists transactions(
 	amount double,
 	PRIMARY KEY(account, transaction_time)
 ) WITH CLUSTERING ORDER BY (transaction_time desc);
-
-

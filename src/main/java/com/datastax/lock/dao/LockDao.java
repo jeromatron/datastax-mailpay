@@ -1,19 +1,16 @@
 package com.datastax.lock.dao;
 
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.servererrors.WriteTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.exceptions.WriteTimeoutException;
-
 public class LockDao {
-
 	private static Logger logger = LoggerFactory.getLogger(LockDao.class);
-	private Session session;
+	private CqlSession session;
 
 	private static String keyspaceName = "datastax_mailpay";
 	private static String seqtable = keyspaceName + ".lock_mem";
@@ -24,20 +21,13 @@ public class LockDao {
 	private PreparedStatement update;
 	private PreparedStatement delete;
 
-	public LockDao(String[] contactPoints) {
-
-		Cluster cluster = Cluster.builder()
-				.addContactPoints(contactPoints)
-				.build();	
-
-		this.session = cluster.connect();
-
+	public LockDao() {
+		this.session = CqlSession.builder().build();
 		this.update = session.prepare(LOCK_UPDATE);
 		this.delete = session.prepare(DELETE_UPDATE);		
 	}
 
 	public boolean getLock(String id) {
-
 		try {
 			ResultSet resultSet = this.session.execute(update.bind("locked", id, null));
 
@@ -56,12 +46,10 @@ public class LockDao {
 			logger.warn(e.getMessage());
 			return false;
 		}
-
 		return true;
 	}
 	
 	public boolean releaseLock(String id) {
-
 		try {
 			this.session.execute(delete.bind(id));
 			logger.debug("lock deleted for " + id);
@@ -69,7 +57,6 @@ public class LockDao {
 			logger.warn(e.getMessage());
 			return false;
 		}
-
 		return true;
 	}
 }

@@ -17,7 +17,6 @@ public class Main {
 	private AtomicLong counter = new AtomicLong(0);
 
 	public Main() {
-
 		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "20"));
 		int noOfAccounts = Integer.parseInt(PropertyHelper.getProperty("noOfAccounts", "1000000"));
 		int noOfTransactions = Integer.parseInt(PropertyHelper.getProperty("noOfTransactions", "500000"));
@@ -39,7 +38,6 @@ public class Main {
 		}
 
 		while (counter.get() < noOfTransactions) {
-
 			Transaction transaction = TransactionGenerator.createRandomTransaction(noOfAccounts);
 			try {
 				queue.put(transaction);
@@ -58,7 +56,6 @@ public class Main {
 				+ (noOfTransactions / timer.getTimeTakenSeconds()) + ") a sec");
 	}
 
-	
 	/**
 	 * @param args
 	 */

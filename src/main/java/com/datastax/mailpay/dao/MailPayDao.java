@@ -1,22 +1,20 @@
 package com.datastax.mailpay.dao;
 
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
 import com.datastax.mailpay.Result;
 import com.datastax.mailpay.State;
 
-public class MailPayDao{
+import java.time.Instant;
 
+public class MailPayDao{
 	private static Logger logger = LoggerFactory.getLogger(MailPayDao.class);
-	private Session session;
+	private CqlSession session;
 
 	private static String keyspaceName = "datastax_mailpay";
 	private static String txtable = keyspaceName + ".transactions";
@@ -49,41 +47,35 @@ public class MailPayDao{
 	private PreparedStatement insertState;
 	private PreparedStatement insertStateStatus;
 
-	public MailPayDao(String[] contactPoints) {
-
-		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).build();
-
-		this.session = cluster.connect();
+	public MailPayDao() {
+		this.session = CqlSession.builder().build();
 		this.insert = this.session.prepare(INSERT);
 		this.insertState = this.session.prepare(INSERT_STATE);
 		this.insertStateStatus = this.session.prepare(INSERT_STATE_STATUS);
 	}
 	
 	public boolean insertTransactionState(String transactionId, String acc1, String acc2, double amount, String reference, DateTime transactionTime, State state) {
-		
-		session.execute(insertState.bind(acc1, acc2, transactionId, transactionTime.toDate(), amount, reference, state.toString()));				
+		session.execute(insertState.bind(acc1, acc2, transactionId, Instant.ofEpochMilli(transactionTime.getMillis()), amount, reference, state.toString()));
 		return true;
 	}
 	
 	public boolean updateStateStatus (String acc1, String acc2, String transactionId, State state){
 		session.execute(insertStateStatus.bind(state.toString(), acc1, acc2, transactionId));
-		
 		return true;
 	}
 	
 	public Result insertTransaction(String transactionId, String acc1, String acc2, double amount, String reference, DateTime transactionTime) {
-
 		Result result = new Result(transactionId);
 		
-		//Insert the transaction into the transactions table.
-		try{
-			session.execute(insert.bind(acc1, transactionTime.toDate(), transactionId, acc2, amount, reference));
+		// Insert the transaction into the transactions table.
+		try {
+			session.execute(insert.bind(acc1, Instant.ofEpochMilli(transactionTime.getMillis()), transactionId, acc2, amount, reference));
 			result.setApproved(true);
-		}catch (Exception e){
+		} catch (Exception e) {
 			logger.warn(e.getMessage());
 			result.setApproved(false);
-			result.setResponseText(e.getMessage());			
+			result.setResponseText(e.getMessage());
 		}
-		return result;		
+		return result;
 	}
 }

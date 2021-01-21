@@ -1,35 +1,23 @@
 package com.datastax.demo;
 
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.core.servererrors.InvalidQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.datastax.demo.utils.FileUtils;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 public abstract class RunCQLFile {
-
 	private static Logger logger = LoggerFactory.getLogger(RunCQLFile.class);
-	static String CREATE_KEYSPACE;
-	static String DROP_KEYSPACE;
 
-	private Cluster cluster;
-	private Session session;
+	private CqlSession session;
 	private String CQL_FILE;
 
 	RunCQLFile(String cqlFile) {
-		
 		logger.info("Running file " + cqlFile);
 		this.CQL_FILE = cqlFile;
-		
-		String contactPointsStr = System.getProperty("contactPoints");
-		if (contactPointsStr == null) {
-			contactPointsStr = "127.0.0.1";
-		}
-
-		cluster = Cluster.builder().addContactPoints(contactPointsStr.split(",")).build();
-		session = cluster.connect();
+		session = CqlSession.builder().build();
 	}
 	
 	void internalSetup() {
@@ -42,7 +30,6 @@ public abstract class RunCQLFile {
 		String[] commands = readFileIntoString.split(";");
 		
 		for (String command : commands){
-			
 			String cql = command.trim();
 			
 			if (cql.isEmpty()){
@@ -51,7 +38,7 @@ public abstract class RunCQLFile {
 			
 			if (cql.toLowerCase().startsWith("drop")){
 				this.runAllowFail(cql);
-			}else{
+			} else {
 				this.run(cql);
 			}			
 		}
@@ -67,7 +54,8 @@ public abstract class RunCQLFile {
 
 	void run(String cql){
 		logger.info("Running : " + cql);
-		session.execute(cql);
+		SimpleStatement s = SimpleStatement.builder(cql).setExecutionProfileName("schema_operations").build();
+		session.execute(s);
 	}
 
 	void sleep(int i) {
@@ -76,10 +64,8 @@ public abstract class RunCQLFile {
 		} catch (Exception e) {
 		}
 	}
-
 	
 	void shutdown() {
 		session.close();
-		cluster.close();
 	}
 }

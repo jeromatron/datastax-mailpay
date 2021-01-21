@@ -10,12 +10,10 @@ import com.datastax.mailpay.State;
 import com.datastax.mailpay.Transaction;
 
 public class TransferFundsCommand implements Command {
-
 	private static Logger logger = LoggerFactory.getLogger(TransferFundsCommand.class);
 
 	private Transaction transaction;
 	private static MailPayService mailPayService = MailPayService.getInstance();
-
 
 	public TransferFundsCommand(Transaction transaction) {
 		this.transaction = transaction;
@@ -23,7 +21,6 @@ public class TransferFundsCommand implements Command {
 
 	@Override
 	public Boolean run() throws Exception {
-		
 		Timer transactionTimer = new Timer();		
 		
 		if (mailPayService.insertTransactionState(transaction)){
@@ -59,7 +56,7 @@ public class TransferFundsCommand implements Command {
 					logger.info("Need to log message");
 				}				
 			}
-		}else{
+		} else {
 			return false;
 		}
 		transactionTimer.end();

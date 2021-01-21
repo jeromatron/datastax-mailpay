@@ -1,2 +1,2 @@
-drop keyspace datastax_mailpay;
+DROP KEYSPACE datastax_mailpay;
 	

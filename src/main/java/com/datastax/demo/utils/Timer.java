@@ -1,7 +1,6 @@
 package com.datastax.demo.utils;
 
 public class Timer {
-
 	private long timeTaken;
 	private long start;
 	
@@ -19,12 +18,9 @@ public class Timer {
 		return this.timeTaken;
 	}
 	
-	public int getTimeTakenSeconds(){
-		return new Double(this.timeTaken / 1000).intValue();
-	}
+	public int getTimeTakenSeconds(){ return Double.valueOf(this.timeTaken / 1000).intValue(); }
 	
 	public String getTimeTakenMinutes(){
-		return String.format("%1$,.2f", new Double(this.timeTaken / (1000*60)));
+		return String.format("%1$,.2f", (double) (this.timeTaken / (1000 * 60)));
 	}
-
 }

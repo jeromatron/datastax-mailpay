@@ -4,60 +4,27 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-
 	private static final String RESOURCES_DIR = "src/main/resources";
-	public static List<String> readFileIntoList(String filename) {
-
-		List<String> fileList = new ArrayList<String>();
-		BufferedReader br = null;
-		File file = new File(RESOURCES_DIR, filename);
-
+	public static List<String> readFileIntoList(String file) {
 		try {
-			String currentLine;
-			br = new BufferedReader(new FileReader(file));
-
-			while ((currentLine = br.readLine()) != null) {
-				fileList.add(currentLine);
-			}
+			return Files.readAllLines(Paths.get(RESOURCES_DIR + '/' + file));
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}			
 		}
-		return fileList;
+		return null;
 	}
-	public static String readFileIntoString(String filename) {
-	
-		StringBuffer buffer = new StringBuffer();
-		BufferedReader br = null;
-		File file = new File(RESOURCES_DIR, filename);
-
+	public static String readFileIntoString(String file) {
 		try {
-			String currentLine;
-			br = new BufferedReader(new FileReader(file));
-
-			while ((currentLine = br.readLine()) != null) {
-				buffer.append(currentLine);
-			}
+			return Files.readString(Paths.get(RESOURCES_DIR + '/' + file));
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}			
 		}
-		return buffer.toString();
+		return null;
 	}
 }

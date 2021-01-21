@@ -54,7 +54,6 @@ class Writer implements KillableRunner {
 	@Override
 	public void shutdown() {
 		while (!queue.isEmpty())
-
 			shutdown = true;
 	}
 }

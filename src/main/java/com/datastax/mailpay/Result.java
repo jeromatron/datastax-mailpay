@@ -1,9 +1,6 @@
 package com.datastax.mailpay;
 
 public class Result {
-
-
-
 	private boolean approved;
 	private final String transactionId;
 	private String responseText;
@@ -42,7 +39,10 @@ public class Result {
 
 	@Override
 	public String toString() {
-		return "Result [approved=" + approved + ", transactionId=" + transactionId + ", responseText=" + responseText
-				+ ", responseCode=" + responseCode + "]";
+		return new StringBuilder("Result [approved=").append(approved)
+				.append(", transactionId=").append(transactionId)
+				.append(", responseText=").append(responseText)
+				.append(", responseCode=").append(responseCode)
+				.append("]").toString();
 	}
 }
