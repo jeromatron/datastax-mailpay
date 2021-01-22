@@ -39,10 +39,9 @@ public class Result {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Result [approved=").append(approved)
-				.append(", transactionId=").append(transactionId)
-				.append(", responseText=").append(responseText)
-				.append(", responseCode=").append(responseCode)
-				.append("]").toString();
+		return "Result [approved=" + approved +
+				", transactionId=" + transactionId +
+				", responseText=" + responseText +
+				", responseCode=" + responseCode + "]";
 	}
 }

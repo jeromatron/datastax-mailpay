@@ -13,20 +13,19 @@ public class TransactionGenerator {
 	public static Transaction createRandomTransaction(int noOfAccounts) {
 		long noOfMillis = noOfDays * DAY_MILLIS;
 
-		int acc1 = new Double(Math.random() * noOfAccounts).intValue();
-		int acc2 = new Double(Math.random() * noOfAccounts).intValue();
+		int acc1 = Double.valueOf(Math.random() * noOfAccounts).intValue();
+		int acc2 = Double.valueOf(Math.random() * noOfAccounts).intValue();
 
 		while (acc1 == acc2) {
-			acc2 = new Double(Math.random() * noOfAccounts).intValue();
+			acc2 = Double.valueOf(Math.random() * noOfAccounts).intValue();
 		}
 
-		long millis = DateTime.now().getMillis() - (new Double(Math.random() * noOfMillis).longValue() + 1l);
+		long millis = DateTime.now().getMillis() - (Double.valueOf(Math.random() * noOfMillis).longValue() + 1L);
 		DateTime newDate = DateTime.now().withMillis(millis);
 
 		String transactionId = UUID.randomUUID().toString();
-		Transaction transaction = new Transaction(acc1 + "@gmail.com", acc2 + "@gmail.com", acc1 + "-" + acc2, newDate, transactionId, Math.random()*1000);
-		 
-		return transaction;
+
+		return new Transaction(acc1 + "@gmail.com", acc2 + "@gmail.com", acc1 + "-" + acc2, newDate, transactionId, Math.random()*1000);
 	}
 
 	public static List<String> statuses = Arrays.asList("SUCCESS", "FAILED", "CANCELLED");

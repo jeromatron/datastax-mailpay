@@ -7,12 +7,12 @@ import com.datastax.demo.utils.Timer;
 import com.datastax.lock.LockService;
 
 public class UnLockCommand implements Command{
-	private static Logger logger = LoggerFactory.getLogger(UnLockCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(UnLockCommand.class);
 	
-	private String acc1;
-	private String acc2;
+	private final String acc1;
+	private final String acc2;
 	
-	private static LockService lockService = LockService.getInstance();
+	private static final LockService lockService = LockService.getInstance();
 	
 	public UnLockCommand(String acc1, String acc2) {
 		this.acc1 = acc1;

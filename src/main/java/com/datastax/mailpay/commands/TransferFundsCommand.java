@@ -10,10 +10,10 @@ import com.datastax.mailpay.State;
 import com.datastax.mailpay.Transaction;
 
 public class TransferFundsCommand implements Command {
-	private static Logger logger = LoggerFactory.getLogger(TransferFundsCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(TransferFundsCommand.class);
 
-	private Transaction transaction;
-	private static MailPayService mailPayService = MailPayService.getInstance();
+	private final Transaction transaction;
+	private static final MailPayService mailPayService = MailPayService.getInstance();
 
 	public TransferFundsCommand(Transaction transaction) {
 		this.transaction = transaction;

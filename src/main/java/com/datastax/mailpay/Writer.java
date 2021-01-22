@@ -11,9 +11,8 @@ import com.datastax.mailpay.commands.TransferFundsCommand;
 import com.datastax.mailpay.commands.UnLockCommand;
 
 class Writer implements KillableRunner {
-
-	private static Logger logger = LoggerFactory.getLogger(Writer.class);
-	private BlockingQueue<Transaction> queue;
+	private static final Logger logger = LoggerFactory.getLogger(Writer.class);
+	private final BlockingQueue<Transaction> queue;
 	private volatile boolean shutdown = false;
 
 	public Writer(BlockingQueue<Transaction> queue) {

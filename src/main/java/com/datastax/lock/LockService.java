@@ -1,16 +1,15 @@
 package com.datastax.lock;
 
+import com.datastax.lock.dao.LockDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.demo.utils.PropertyHelper;
-import com.datastax.lock.dao.LockDao;
-
 public class LockService {
-	private LockDao dao = new LockDao();
-	private static Logger logger = LoggerFactory.getLogger( LockService.class );
+	private static final Logger logger = LoggerFactory.getLogger( LockService.class );
 
-	private static LockService lockService = new LockService();
+	private final LockDao dao = new LockDao();
+
+	private static final LockService lockService = new LockService();
 	
 	public static LockService getInstance() {
 		return lockService;

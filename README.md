@@ -5,17 +5,18 @@
 
 This is an example application for exchanging money using email addresses. 
 
-The process for will add a transaction to both the payer and payee's ledger. 
+The process will add a transaction to both the payer and payee's ledger. 
 
-The steps involved are 
+The steps are 
 
 1. Create an entry in the lock table to lock the accounts 
-2. Create an entry in the transaction_state table with a status if STARTED to ensure that we have a record of what we trying to do. This will act as a state machine for the transaction. The state table will contain a copy of the transactions so that they can replayed.   
-3. Write to both payer and payee's ledger. 
-4. Update transaction state to SUCCESS   
+2. Create an entry in the transaction_state table with a status of `STARTED` to ensure that we have a record of what we are trying to do.
+   This will act as a state machine for the transaction. The state table will contain a copy of the transactions so that they can be replayed.   
+3. Write to both the payer's and payee's ledger. 
+4. Update transaction state to `SUCCESS`.   
 5. Unlock the accounts. 
 
-If there are problems at any stage the, the transactions can be replayed by the entry in the state table. 
+If there are problems at any stage, the transactions can be replayed by the entry in the state table. 
 
 ## Schema Setup
 Note : This will drop the keyspace "datastax_mailpay" and create a new one. All existing data will be lost. 

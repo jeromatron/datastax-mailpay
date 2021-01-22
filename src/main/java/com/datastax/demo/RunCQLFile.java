@@ -9,7 +9,7 @@ import com.datastax.demo.utils.FileUtils;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 public abstract class RunCQLFile {
-	private static Logger logger = LoggerFactory.getLogger(RunCQLFile.class);
+	private static final Logger logger = LoggerFactory.getLogger(RunCQLFile.class);
 
 	private CqlSession session;
 	private String CQL_FILE;
@@ -17,14 +17,19 @@ public abstract class RunCQLFile {
 	RunCQLFile(String cqlFile) {
 		logger.info("Running file " + cqlFile);
 		this.CQL_FILE = cqlFile;
-		session = CqlSession.builder().build();
+		try {
+			session = CqlSession.builder().build();
+		} catch (Exception e) {
+			logger.error("Cannot initialize RunCQLFile", e);
+			System.exit(1);
+		}
 	}
 	
 	void internalSetup() {
-		this.runfile();		
+		this.runFile();
 	}
 	
-	void runfile() {
+	void runFile() {
 		String readFileIntoString = FileUtils.readFileIntoString(CQL_FILE);
 		
 		String[] commands = readFileIntoString.split(";");
@@ -56,13 +61,6 @@ public abstract class RunCQLFile {
 		logger.info("Running : " + cql);
 		SimpleStatement s = SimpleStatement.builder(cql).setExecutionProfileName("schema_operations").build();
 		session.execute(s);
-	}
-
-	void sleep(int i) {
-		try {
-			Thread.sleep(i);
-		} catch (Exception e) {
-		}
 	}
 	
 	void shutdown() {

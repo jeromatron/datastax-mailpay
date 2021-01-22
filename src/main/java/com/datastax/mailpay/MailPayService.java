@@ -1,18 +1,16 @@
 package com.datastax.mailpay;
 
+import com.datastax.demo.utils.Timer;
+import com.datastax.mailpay.dao.MailPayDao;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.demo.utils.PropertyHelper;
-import com.datastax.demo.utils.Timer;
-import com.datastax.mailpay.dao.MailPayDao;
-
 public class MailPayService {
-	private static Logger logger = LoggerFactory.getLogger(MailPayService.class);
-	private static MailPayService service = new MailPayService();
+	private static final Logger logger = LoggerFactory.getLogger(MailPayService.class);
+	private static final MailPayService service = new MailPayService();
 
-	private MailPayDao dao = new MailPayDao();
+	private final MailPayDao dao = new MailPayDao();
 
 	public static MailPayService getInstance() {
 		return service;

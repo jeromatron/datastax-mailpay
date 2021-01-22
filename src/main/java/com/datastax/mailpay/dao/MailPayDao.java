@@ -1,26 +1,25 @@
 package com.datastax.mailpay.dao;
 
+import com.datastax.mailpay.Result;
+import com.datastax.mailpay.State;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.mailpay.Result;
-import com.datastax.mailpay.State;
-
 import java.time.Instant;
 
-public class MailPayDao{
-	private static Logger logger = LoggerFactory.getLogger(MailPayDao.class);
+public class MailPayDao {
+	private static final Logger logger = LoggerFactory.getLogger(MailPayDao.class);
 	private CqlSession session;
 
-	private static String keyspaceName = "datastax_mailpay";
-	private static String txtable = keyspaceName + ".transactions";
-	private static String statetable = keyspaceName + ".transaction_state";
+	private static final String keyspaceName = "datastax_mailpay";
+	private static final String txtable = keyspaceName + ".transactions";
+	private static final String statetable = keyspaceName + ".transaction_state";
 
-	private static String INSERT = "insert into " + txtable + "(account, transaction_time, transaction_id, other_account, amount, reference) values (?,?,?,?,?,?)";
+	private static final String INSERT =
+			"insert into " + txtable + "(account, transaction_time, transaction_id, other_account, amount, reference) values (?,?,?,?,?,?)";
 	
 	/*
 	 * For Transactions States the process is as follows
@@ -40,18 +39,25 @@ public class MailPayDao{
 	 *  
 	 * 
 	 */
-	private static String INSERT_STATE = "insert into " + statetable + "(account1, account2, transaction_id, transaction_time, amount, reference, status) values (?,?,?,?,?,?,?)";
-	private static String INSERT_STATE_STATUS = "update " + statetable + " set status=? where account1 = ? and account2 = ? and transaction_id =?";
+	private static final String INSERT_STATE =
+			"insert into " + statetable + "(account1, account2, transaction_id, transaction_time, amount, reference, status) values (?,?,?,?,?,?,?)";
+	private static final String INSERT_STATE_STATUS =
+			"update " + statetable + " set status=? where account1 = ? and account2 = ? and transaction_id =?";
 	
 	private PreparedStatement insert;
 	private PreparedStatement insertState;
 	private PreparedStatement insertStateStatus;
 
 	public MailPayDao() {
-		this.session = CqlSession.builder().build();
-		this.insert = this.session.prepare(INSERT);
-		this.insertState = this.session.prepare(INSERT_STATE);
-		this.insertStateStatus = this.session.prepare(INSERT_STATE_STATUS);
+		try {
+			this.session = CqlSession.builder().build();
+			this.insert = this.session.prepare(INSERT);
+			this.insertState = this.session.prepare(INSERT_STATE);
+			this.insertStateStatus = this.session.prepare(INSERT_STATE_STATUS);
+		} catch (Exception e) {
+			logger.error("Could not initialize MailPayDao", e);
+			System.exit(1);
+		}
 	}
 	
 	public boolean insertTransactionState(String transactionId, String acc1, String acc2, double amount, String reference, DateTime transactionTime, State state) {

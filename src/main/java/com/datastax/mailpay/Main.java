@@ -13,8 +13,8 @@ import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.demo.utils.Timer;
 
 public class Main {
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
-	private AtomicLong counter = new AtomicLong(0);
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
+	private final AtomicLong counter = new AtomicLong(0);
 
 	public Main() {
 		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "20"));
@@ -59,7 +59,7 @@ public class Main {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		new Main();
 	}
 }

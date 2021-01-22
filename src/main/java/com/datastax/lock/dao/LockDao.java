@@ -9,22 +9,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LockDao {
-	private static Logger logger = LoggerFactory.getLogger(LockDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(LockDao.class);
 	private CqlSession session;
 
-	private static String keyspaceName = "datastax_mailpay";
-	private static String seqtable = keyspaceName + ".lock_mem";
+	private static final String keyspaceName = "datastax_mailpay";
+	private static final String seqtable = keyspaceName + ".lock_mem";
 
-	private String LOCK_UPDATE = "update " + seqtable + " set lock = ? where id = ? if lock=?";
-	private String DELETE_UPDATE = "delete from " + seqtable + " where id = ?";
+	private static final String LOCK_UPDATE = "update " + seqtable + " set lock = ? where id = ? if lock=?";
+	private static final String DELETE_UPDATE = "delete from " + seqtable + " where id = ?";
 
 	private PreparedStatement update;
 	private PreparedStatement delete;
 
 	public LockDao() {
-		this.session = CqlSession.builder().build();
-		this.update = session.prepare(LOCK_UPDATE);
-		this.delete = session.prepare(DELETE_UPDATE);		
+		try {
+			this.session = CqlSession.builder().build();
+			this.update = session.prepare(LOCK_UPDATE);
+			this.delete = session.prepare(DELETE_UPDATE);
+		} catch (Exception e) {
+			logger.error("Cannot initialize LockDao", e);
+			System.exit(1);
+		}
 	}
 
 	public boolean getLock(String id) {
@@ -34,7 +39,7 @@ public class LockDao {
 			if (resultSet != null) {
 				Row row = resultSet.one();
 
-				if (row.getBool(0) == false) {
+				if (row.getBoolean(0) == false) {
 					String failedLocked = row.getString("lock");
 					logger.info("Update failed as current lock was " + failedLocked + " not null");
 					return false;

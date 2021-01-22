@@ -18,7 +18,7 @@ public class Timer {
 		return this.timeTaken;
 	}
 	
-	public int getTimeTakenSeconds(){ return Double.valueOf(this.timeTaken / 1000).intValue(); }
+	public int getTimeTakenSeconds(){ return Double.valueOf(this.timeTaken / 1000.0).intValue(); }
 	
 	public String getTimeTakenMinutes(){
 		return String.format("%1$,.2f", (double) (this.timeTaken / (1000 * 60)));
