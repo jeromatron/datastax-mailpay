@@ -1,5 +1,6 @@
 package com.datastax.mailpay.dao;
 
+import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.mailpay.Result;
 import com.datastax.mailpay.State;
 import com.datastax.oss.driver.api.core.CqlSession;
@@ -50,7 +51,10 @@ public class MailPayDao {
 
 	public MailPayDao() {
 		try {
-			this.session = CqlSession.builder().build();
+			this.session = CqlSession.builder()
+					.addContactPoints(PropertyHelper.getContactPoints())
+					.withLocalDatacenter(PropertyHelper.getLocalDatacenter())
+					.build();
 			this.insert = this.session.prepare(INSERT);
 			this.insertState = this.session.prepare(INSERT_STATE);
 			this.insertStateStatus = this.session.prepare(INSERT_STATE_STATUS);

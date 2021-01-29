@@ -1,5 +1,6 @@
 package com.datastax.lock.dao;
 
+import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
@@ -12,8 +13,7 @@ public class LockDao {
 	private static final Logger logger = LoggerFactory.getLogger(LockDao.class);
 	private CqlSession session;
 
-	private static final String keyspaceName = "datastax_mailpay";
-	private static final String seqtable = keyspaceName + ".lock_mem";
+	private static final String seqtable = PropertyHelper.getKeyspaceName() + ".lock_mem";
 
 	private static final String LOCK_UPDATE = "update " + seqtable + " set lock = ? where id = ? if lock=?";
 	private static final String DELETE_UPDATE = "delete from " + seqtable + " where id = ?";
@@ -23,7 +23,10 @@ public class LockDao {
 
 	public LockDao() {
 		try {
-			this.session = CqlSession.builder().build();
+			this.session = CqlSession.builder()
+					.addContactPoints(PropertyHelper.getContactPoints())
+					.withLocalDatacenter(PropertyHelper.getLocalDatacenter())
+					.build();
 			this.update = session.prepare(LOCK_UPDATE);
 			this.delete = session.prepare(DELETE_UPDATE);
 		} catch (Exception e) {
