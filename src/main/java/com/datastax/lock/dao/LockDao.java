@@ -1,11 +1,11 @@
 package com.datastax.lock.dao;
 
-import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.servererrors.WriteTimeoutException;
+import com.datastax.utils.PropertyHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

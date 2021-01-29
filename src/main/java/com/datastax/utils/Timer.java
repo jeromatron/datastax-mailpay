@@ -1,4 +1,4 @@
-package com.datastax.demo.utils;
+package com.datastax.utils;
 
 public class Timer {
 	private long timeTaken;

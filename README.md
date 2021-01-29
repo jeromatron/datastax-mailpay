@@ -19,23 +19,48 @@ The steps are
 If there are problems at any stage, the transactions can be replayed by the entry in the state table. 
 
 ## Contact points
-To specify contact points use the contactPoints command line parameter e.g. '-DcontactPoints=192.168.25.100,192.168.25.101'
+To specify cluster contact points, use the `contactPoints` command line parameter e.g. `-DcontactPoints=192.168.25.100,192.168.25.101`
 The contact points can take multiple points in the IP,IP,IP (no spaces).
+
+## Replication
+`replication` defaults to `SimpleStrategy` and replication factor of 1.  You can override this by specifying replication in 1+ data center specifically.
+For example, if you specify `-Dreplication=Sydney,3,Jakarta,3`, it will use the NetworkTopologyStrategy and create the keyspace with replication in both the `Sydney` and the `Jakarta` data centers.
+
+## Local data center
+`localDatacenter` defaults to `Cassandra` which is the workload specific default of DataStax Enterprise.  If you give `replication` that specifies data centers, you'll need to also specify a `localDatacenter`. 
+
+## Keyspace name
+`keyspaceName` defaults to `datastax_mailpay`.
 
 ## Schema setup
 To create a single node cluster with replication factor of 1 for standard localhost setup, run the following
 
-    mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaSetup"
+    mvn clean compile exec:java -Dexec.mainClass="com.datastax.utils.SchemaSetup"
+
+### An example of using different options
+See [PropertyHelper](/src/main/java/com/datastax/utils/PropertyHelper.java)
+
+    mvn clean compile exec:java -Dexec.mainClass="com.datastax.utils.SchemaSetup" -DcontactPoints=10.101.33.84
 
 ## Running the mailpay simulation
-To run the processor 
+To run the processor with defaults (local database, DC named `Cassandra`, `SimpleStrategy`, replication factor: `1`, keyspace named `datastax_mailpay`)
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main"
+
+### Some examples of using different options 
+
+    mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main" -DcontactPoints=10.101.33.84 -Dreplication=3
+
+Above we are using the replication strategy `SimpleStrategy` with a replication factor of `3` with a remote database server.
+
+    mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main" -DcontactPoints=10.101.33.84 -DlocalDatacenter=Sydney -Dreplication=Sydney,3,Jakarta,3 -DkeyspaceName=mailpay
+
+Here we are using the replication strategy `NetworkTopologyStrategy` with replication in `Sydney` (`3`) and `Jakarta` (`3`) with a remote database server and an overridden keyspace name of `mailpay`.
 
 ## Cleaning up the schema and data
 To remove the tables and the schema, run the following.
 
-    mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaTeardown"
+    mvn clean compile exec:java -Dexec.mainClass="com.datastax.utils.SchemaTeardown"
 
-Note : If you're running mailpay against a cluster, Cassandra will automatically flush and snapshot the data to create a backup.
+Note : If you're running `mailpay` against a cluster, Cassandra will automatically flush and snapshot the data to create a backup.
 To reclaim the disk space, delete the data on disk for the keyspace.

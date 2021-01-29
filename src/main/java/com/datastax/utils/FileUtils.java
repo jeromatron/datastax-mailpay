@@ -1,4 +1,4 @@
-package com.datastax.demo.utils;
+package com.datastax.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;

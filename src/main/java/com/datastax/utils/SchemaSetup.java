@@ -1,6 +1,4 @@
-package com.datastax.demo;
-
-import com.datastax.demo.utils.PropertyHelper;
+package com.datastax.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

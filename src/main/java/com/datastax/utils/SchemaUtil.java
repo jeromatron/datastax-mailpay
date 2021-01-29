@@ -1,6 +1,5 @@
-package com.datastax.demo;
+package com.datastax.utils;
 
-import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import org.slf4j.Logger;

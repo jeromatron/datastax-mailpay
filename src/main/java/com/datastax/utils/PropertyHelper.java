@@ -1,4 +1,4 @@
-package com.datastax.demo.utils;
+package com.datastax.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

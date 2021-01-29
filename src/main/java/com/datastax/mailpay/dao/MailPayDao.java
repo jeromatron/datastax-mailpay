@@ -1,10 +1,10 @@
 package com.datastax.mailpay.dao;
 
-import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.mailpay.Result;
 import com.datastax.mailpay.State;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.utils.PropertyHelper;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ public class MailPayDao {
 	private static final Logger logger = LoggerFactory.getLogger(MailPayDao.class);
 	private CqlSession session;
 
-	private static final String keyspaceName = "datastax_mailpay";
+	private static final String keyspaceName = PropertyHelper.getKeyspaceName();
 	private static final String txtable = keyspaceName + ".transactions";
 	private static final String statetable = keyspaceName + ".transaction_state";
 
