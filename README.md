@@ -19,7 +19,7 @@ The steps are
 If there are problems at any stage, the transactions can be replayed by the entry in the state table. 
 
 ## Contact points
-To specify cluster contact points, use the `contactPoints` command line parameter e.g. `-DcontactPoints=192.168.25.100,192.168.25.101`
+To specify cluster contact points, use the `contactPoints` command line parameter, e.g. `-DcontactPoints=192.168.25.100,192.168.25.101`.
 The contact points can take multiple points in the IP,IP,IP (no spaces).
 
 ## Replication
@@ -43,7 +43,7 @@ See [PropertyHelper](/src/main/java/com/datastax/utils/PropertyHelper.java)
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.utils.SchemaSetup" -DcontactPoints=10.101.33.84
 
 ## Running the mailpay simulation
-To run the processor with defaults (local database, DC named `Cassandra`, `SimpleStrategy`, replication factor: `1`, keyspace named `datastax_mailpay`)
+To run the processor with defaults (local database, DC named `Cassandra`, `SimpleStrategy`, replication factor: 1, keyspace named `datastax_mailpay`)
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main"
 
@@ -51,11 +51,11 @@ To run the processor with defaults (local database, DC named `Cassandra`, `Simpl
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main" -DcontactPoints=10.101.33.84 -Dreplication=3
 
-Above we are using the replication strategy `SimpleStrategy` with a replication factor of `3` with a remote database server.
+Above we are using the replication strategy `SimpleStrategy` with a replication factor of 3 with a remote database server.
 
     mvn clean compile exec:java -Dexec.mainClass="com.datastax.mailpay.Main" -DcontactPoints=10.101.33.84 -DlocalDatacenter=Sydney -Dreplication=Sydney,3,Jakarta,3 -DkeyspaceName=mailpay
 
-Here we are using the replication strategy `NetworkTopologyStrategy` with replication in `Sydney` (`3`) and `Jakarta` (`3`) with a remote database server and an overridden keyspace name of `mailpay`.
+Here we are using the replication strategy `NetworkTopologyStrategy` with replication in `Sydney` (3) and `Jakarta` (3) with a remote database server and an overridden keyspace name of `mailpay`.
 
 ## Cleaning up the schema and data
 To remove the tables and the schema, run the following.
